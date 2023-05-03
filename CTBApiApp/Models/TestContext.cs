@@ -17,6 +17,7 @@ public partial class TestContext : DbContext
 
     public virtual DbSet<Administrator> Administrators { get; set; }
 
+
     public virtual DbSet<Consignment> Consignments { get; set; }
 
     public virtual DbSet<ConsignmentPlayer> ConsignmentPlayers { get; set; }
