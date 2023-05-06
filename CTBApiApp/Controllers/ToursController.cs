@@ -22,6 +22,7 @@ namespace CTBApiApp.Controllers
 
         // GET: api/Tours
         [HttpGet]
+        [Route("get")]
         public async Task<ActionResult<IEnumerable<Tour>>> GetTours()
         {
           if (_context.Tours == null)
@@ -32,8 +33,9 @@ namespace CTBApiApp.Controllers
         }
 
         // GET: api/Tours/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Tour>> GetTour(int id)
+        [HttpGet]
+        [Route("getById")]
+        public async Task<ActionResult<Tour>> GetTour([FromQuery] int id)
         {
           if (_context.Tours == null)
           {
@@ -51,8 +53,9 @@ namespace CTBApiApp.Controllers
 
         // PUT: api/Tours/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTour(int id, Tour tour)
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> PutTour([FromQuery] int id, [FromBody] Tour tour)
         {
             if (id != tour.TourId)
             {
@@ -83,7 +86,8 @@ namespace CTBApiApp.Controllers
         // POST: api/Tours
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tour>> PostTour(Tour tour)
+        [Route("create")]
+        public async Task<ActionResult<Tour>> PostTour([FromBody] Tour tour)
         {
           if (_context.Tours == null)
           {
@@ -96,8 +100,9 @@ namespace CTBApiApp.Controllers
         }
 
         // DELETE: api/Tours/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTour(int id)
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteTour([FromQuery] int id)
         {
             if (_context.Tours == null)
             {

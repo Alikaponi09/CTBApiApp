@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CTBApiApp.Models;
+using CTBApiApp.ModelView;
 
 namespace CTBApiApp.Controllers
 {
@@ -22,23 +23,25 @@ namespace CTBApiApp.Controllers
 
         // GET: api/Organizers
         [HttpGet]
+        [Route("get")]
         public async Task<ActionResult<IEnumerable<Organizer>>> GetOrganizers()
         {
-          if (_context.Organizers == null)
-          {
-              return NotFound();
-          }
+            if (_context.Organizers == null)
+            {
+                return NotFound();
+            }
             return await _context.Organizers.ToListAsync();
         }
 
         // GET: api/Organizers/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Organizer>> GetOrganizer(int id)
+        [HttpGet]
+        [Route("getById")]
+        public async Task<ActionResult<Organizer>> GetOrganizer([FromQuery] int id)
         {
-          if (_context.Organizers == null)
-          {
-              return NotFound();
-          }
+            if (_context.Organizers == null)
+            {
+                return NotFound();
+            }
             var organizer = await _context.Organizers.FindAsync(id);
 
             if (organizer == null)
@@ -51,8 +54,9 @@ namespace CTBApiApp.Controllers
 
         // PUT: api/Organizers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrganizer(int id, Organizer organizer)
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> PutOrganizer([FromQuery] int id, [FromBody] Organizer organizer)
         {
             if (id != organizer.OrganizerId)
             {
@@ -83,36 +87,48 @@ namespace CTBApiApp.Controllers
         // POST: api/Organizers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Organizer>> PostOrganizer(Organizer organizer)
-        {
-          if (_context.Organizers == null)
-          {
-              return Problem("Entity set 'TestContext.Organizers'  is null.");
-          }
-            _context.Organizers.Add(organizer);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetOrganizer", new { id = organizer.OrganizerId }, organizer);
-        }
-
-        // DELETE: api/Organizers/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrganizer(int id)
+        [Route("create")]
+        public async Task<IActionResult> PostOrganizer([FromBody] RegistrateViewModel organizer)
         {
             if (_context.Organizers == null)
             {
-                return NotFound();
+                return Problem("Entity set 'TestContext.Organizers'  is null.");
+            }
+
+            Organizer temp = new()
+            {
+                FirstName = organizer.FirstName,
+                MiddleName = organizer.MiddleName,
+                LastName = organizer.LastName,
+                Login = organizer.Login,
+                Password = organizer.Password
+            };
+
+            _context.Organizers.Add(temp);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // DELETE: api/Organizers/5
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteOrganizer([FromQuery] int id)
+        {
+            if (_context.Organizers == null)
+            {
+                return Problem("Entity set 'TestContext.Organizers' is null.");
             }
             var organizer = await _context.Organizers.FindAsync(id);
             if (organizer == null)
             {
-                return NotFound();
+                return BadRequest("Organizer not found");
             }
 
             _context.Organizers.Remove(organizer);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         private bool OrganizerExists(int id)

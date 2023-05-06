@@ -22,6 +22,7 @@ namespace CTBApiApp.Controllers
 
         // GET: api/EventPlayers
         [HttpGet]
+        [Route("get")]
         public async Task<ActionResult<IEnumerable<EventPlayer>>> GetEventPlayers()
         {
           if (_context.EventPlayers == null)
@@ -32,8 +33,9 @@ namespace CTBApiApp.Controllers
         }
 
         // GET: api/EventPlayers/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<EventPlayer>> GetEventPlayer(int id)
+        [HttpGet]
+        [Route("getById")]
+        public async Task<ActionResult<EventPlayer>> GetEventPlayer([FromQuery] int id)
         {
           if (_context.EventPlayers == null)
           {
@@ -51,8 +53,9 @@ namespace CTBApiApp.Controllers
 
         // PUT: api/EventPlayers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEventPlayer(int id, EventPlayer eventPlayer)
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> PutEventPlayer([FromQuery] int id, [FromBody] EventPlayer eventPlayer)
         {
             if (id != eventPlayer.EventPlayerId)
             {
@@ -83,7 +86,8 @@ namespace CTBApiApp.Controllers
         // POST: api/EventPlayers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<EventPlayer>> PostEventPlayer(EventPlayer eventPlayer)
+        [Route("create")]
+        public async Task<ActionResult<EventPlayer>> PostEventPlayer([FromBody] EventPlayer eventPlayer)
         {
           if (_context.EventPlayers == null)
           {
@@ -96,8 +100,8 @@ namespace CTBApiApp.Controllers
         }
 
         // DELETE: api/EventPlayers/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEventPlayer(int id)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteEventPlayer([FromQuery] int id)
         {
             if (_context.EventPlayers == null)
             {

@@ -22,6 +22,7 @@ namespace CTBApiApp.Controllers
 
         // GET: api/Administrators
         [HttpGet]
+        [Route("get")]
         public async Task<ActionResult<IEnumerable<Administrator>>> GetAdministrators()
         {
           if (_context.Administrators == null)
@@ -32,8 +33,9 @@ namespace CTBApiApp.Controllers
         }
 
         // GET: api/Administrators/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Administrator>> GetAdministrator(int id)
+        [HttpGet]
+        [Route("getById")]
+        public async Task<ActionResult<Administrator>> GetAdministrator([FromQuery] int id)
         {
           if (_context.Administrators == null)
           {
@@ -51,8 +53,9 @@ namespace CTBApiApp.Controllers
 
         // PUT: api/Administrators/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAdministrator(int id, Administrator administrator)
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> PutAdministrator([FromQuery] int id, [FromBody] Administrator administrator)
         {
             if (id != administrator.AdministratorId)
             {
@@ -83,7 +86,8 @@ namespace CTBApiApp.Controllers
         // POST: api/Administrators
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Administrator>> PostAdministrator(Administrator administrator)
+        [Route("create")]
+        public async Task<ActionResult<Administrator>> PostAdministrator([FromBody] Administrator administrator)
         {
           if (_context.Administrators == null)
           {
@@ -96,8 +100,9 @@ namespace CTBApiApp.Controllers
         }
 
         // DELETE: api/Administrators/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAdministrator(int id)
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteAdministrator([FromQuery] int id)
         {
             if (_context.Administrators == null)
             {

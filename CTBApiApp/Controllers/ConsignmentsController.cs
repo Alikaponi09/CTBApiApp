@@ -22,6 +22,7 @@ namespace CTBApiApp.Controllers
 
         // GET: api/Consignments
         [HttpGet]
+        [Route("get")]
         public async Task<ActionResult<IEnumerable<Consignment>>> GetConsignments()
         {
           if (_context.Consignments == null)
@@ -32,8 +33,9 @@ namespace CTBApiApp.Controllers
         }
 
         // GET: api/Consignments/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Consignment>> GetConsignment(int id)
+        [HttpGet]
+        [Route("getById")]
+        public async Task<ActionResult<Consignment>> GetConsignment([FromQuery] int id)
         {
           if (_context.Consignments == null)
           {
@@ -51,8 +53,9 @@ namespace CTBApiApp.Controllers
 
         // PUT: api/Consignments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutConsignment(int id, Consignment consignment)
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> PutConsignment([FromQuery] int id,[FromBody] Consignment consignment)
         {
             if (id != consignment.ConsignmentId)
             {
@@ -83,7 +86,8 @@ namespace CTBApiApp.Controllers
         // POST: api/Consignments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Consignment>> PostConsignment(Consignment consignment)
+        [Route("create")]
+        public async Task<ActionResult<Consignment>> PostConsignment([FromBody] Consignment consignment)
         {
           if (_context.Consignments == null)
           {
@@ -96,8 +100,9 @@ namespace CTBApiApp.Controllers
         }
 
         // DELETE: api/Consignments/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteConsignment(int id)
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteConsignment([FromQuery] int id)
         {
             if (_context.Consignments == null)
             {

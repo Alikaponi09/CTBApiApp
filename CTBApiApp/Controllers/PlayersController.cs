@@ -22,6 +22,7 @@ namespace CTBApiApp.Controllers
 
         // GET: api/Players
         [HttpGet]
+        [Route("get")]
         public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
         {
           if (_context.Players == null)
@@ -32,8 +33,9 @@ namespace CTBApiApp.Controllers
         }
 
         // GET: api/Players/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Player>> GetPlayer(int id)
+        [HttpGet]
+        [Route("getById")]
+        public async Task<ActionResult<Player>> GetPlayer([FromQuery] int id)
         {
           if (_context.Players == null)
           {
@@ -51,8 +53,9 @@ namespace CTBApiApp.Controllers
 
         // PUT: api/Players/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlayer(int id, Player player)
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> PutPlayer([FromQuery] int id, [FromBody] Player player)
         {
             if (id != player.Fideid)
             {
@@ -83,7 +86,8 @@ namespace CTBApiApp.Controllers
         // POST: api/Players
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Player>> PostPlayer(Player player)
+        [Route("create")]
+        public async Task<ActionResult<Player>> PostPlayer([FromBody] Player player)
         {
           if (_context.Players == null)
           {
@@ -110,8 +114,9 @@ namespace CTBApiApp.Controllers
         }
 
         // DELETE: api/Players/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePlayer(int id)
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeletePlayer([FromQuery] int id)
         {
             if (_context.Players == null)
             {

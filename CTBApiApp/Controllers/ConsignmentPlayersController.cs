@@ -22,6 +22,7 @@ namespace CTBApiApp.Controllers
 
         // GET: api/ConsignmentPlayers
         [HttpGet]
+        [Route("get")]
         public async Task<ActionResult<IEnumerable<ConsignmentPlayer>>> GetConsignmentPlayers()
         {
           if (_context.ConsignmentPlayers == null)
@@ -32,8 +33,9 @@ namespace CTBApiApp.Controllers
         }
 
         // GET: api/ConsignmentPlayers/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ConsignmentPlayer>> GetConsignmentPlayer(int id)
+        [HttpGet]
+        [Route("getById")]
+        public async Task<ActionResult<ConsignmentPlayer>> GetConsignmentPlayer([FromQuery] int id)
         {
           if (_context.ConsignmentPlayers == null)
           {
@@ -51,8 +53,9 @@ namespace CTBApiApp.Controllers
 
         // PUT: api/ConsignmentPlayers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutConsignmentPlayer(int id, ConsignmentPlayer consignmentPlayer)
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> PutConsignmentPlayer([FromQuery] int id, [FromBody] ConsignmentPlayer consignmentPlayer)
         {
             if (id != consignmentPlayer.ConsignmentPlayerId)
             {
@@ -83,7 +86,8 @@ namespace CTBApiApp.Controllers
         // POST: api/ConsignmentPlayers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ConsignmentPlayer>> PostConsignmentPlayer(ConsignmentPlayer consignmentPlayer)
+        [Route("create")]
+        public async Task<ActionResult<ConsignmentPlayer>> PostConsignmentPlayer([FromBody] ConsignmentPlayer consignmentPlayer)
         {
           if (_context.ConsignmentPlayers == null)
           {
@@ -96,8 +100,9 @@ namespace CTBApiApp.Controllers
         }
 
         // DELETE: api/ConsignmentPlayers/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteConsignmentPlayer(int id)
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteConsignmentPlayer([FromQuery] int id)
         {
             if (_context.ConsignmentPlayers == null)
             {

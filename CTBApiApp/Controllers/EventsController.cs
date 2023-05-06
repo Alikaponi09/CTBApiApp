@@ -22,6 +22,7 @@ namespace CTBApiApp.Controllers
 
         // GET: api/Events
         [HttpGet]
+        [Route("get")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
         {
             if (_context.Events == null)
@@ -32,8 +33,9 @@ namespace CTBApiApp.Controllers
         }
 
         // GET: api/Events/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Event>> GetEvent(int id)
+        [HttpGet]
+        [Route("getById")]
+        public async Task<ActionResult<Event>> GetEvent([FromQuery] int id)
         {
             if (_context.Events == null)
             {
@@ -51,8 +53,9 @@ namespace CTBApiApp.Controllers
 
         // PUT: api/Events/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEvent(int id, Event @event)
+        [HttpPut]
+        [Route("edit")]
+        public async Task<IActionResult> PutEvent([FromQuery] int id, [FromBody] Event @event)
         {
             if (id != @event.EventId)
             {
@@ -83,7 +86,8 @@ namespace CTBApiApp.Controllers
         // POST: api/Events
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Event>> PostEvent(Event @event)
+        [Route("create")]
+        public async Task<ActionResult<Event>> PostEvent([FromBody] Event @event)
         {
             if (_context.Events == null)
             {
@@ -96,8 +100,9 @@ namespace CTBApiApp.Controllers
         }
 
         // DELETE: api/Events/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEvent(int id)
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteEvent([FromQuery] int id)
         {
             if (_context.Events == null)
             {
