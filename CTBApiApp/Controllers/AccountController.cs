@@ -40,6 +40,35 @@ namespace CTBApiApp.Controllers
         }
 
         [HttpPost]
+        [Route("registrate")]
+        public async Task<IActionResult> PostOrganizer([FromBody] RegistrateViewModel organizer)
+        {
+            if (_context.Organizers == null)
+            {
+                return Problem("Entity set 'TestContext.Organizers'  is null.");
+            }
+
+            if (organizer == null)
+            {
+                return BadRequest("Entity set 'RegistrateViewModel'  is null.");
+            }
+
+            Organizer temp = new()
+            {
+                FirstName = organizer.FirstName,
+                MiddleName = organizer.MiddleName,
+                LastName = organizer.LastName,
+                Login = organizer.Login,
+                Password = organizer.Password
+            };
+
+            _context.Organizers.Add(temp);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost]
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {

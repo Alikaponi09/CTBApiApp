@@ -35,7 +35,7 @@ public partial class TestContext : DbContext
     public virtual DbSet<Tour> Tours { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-2F32TMB;Database=test;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-2F32TMB;Database=test111;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
