@@ -1,5 +1,6 @@
 ﻿using CTBApiApp.Models;
 using CTBApiApp.ModelView;
+using CTBApiApp.ModelView.DBView;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -89,7 +90,18 @@ namespace CTBApiApp.Controllers
 
             if (user == null) return BadRequest();
 
-            return Ok(user);
+            OrganizerViewModel organizerViewModel = new()
+            {
+                OrganizerID = user.OrganizerId,
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+                Login = user.Login,
+                Password = user.Password,
+                Administrator = await _context.Administrators.FirstOrDefaultAsync(p => p.OrganizerId == user.OrganizerId) != default(Administrator) ? 1 : -1
+            };
+
+            return Ok(organizerViewModel);
         }
     }
 }
