@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CTBApiApp.Models;
+using Microsoft.Extensions.Logging;
+using CTBApiApp.ModelView.DBView;
+using System.Security.Claims;
 
 namespace CTBApiApp.Controllers
 {
@@ -20,7 +23,7 @@ namespace CTBApiApp.Controllers
             _context = context;
         }
 
-        // GET: api/Events
+
         [HttpGet]
         [Route("get")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
@@ -32,7 +35,24 @@ namespace CTBApiApp.Controllers
             return await _context.Events.ToListAsync();
         }
 
-        // GET: api/Events/5
+
+        [HttpGet]
+        [Route("getPublic")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetEventsPublic()
+        {
+            var claims = HttpContext.User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+            if (claims == null) return BadRequest();
+            var user = await _context.Organizers.FirstOrDefaultAsync(p => p.Login == claims.Value);
+            if (user == null) return BadRequest();
+
+            if (_context.Events == null)
+            {
+                return NotFound();
+            }
+            return await _context.Events.Where(p => p.IsPublic && p.OrganizerId == user.OrganizerId).ToListAsync();
+        }
+
+
         [HttpGet]
         [Route("getById")]
         public async Task<ActionResult<Event>> GetEvent([FromQuery] int id)
@@ -51,18 +71,30 @@ namespace CTBApiApp.Controllers
             return @event;
         }
 
-        // PUT: api/Events/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPut]
         [Route("edit")]
-        public async Task<IActionResult> PutEvent([FromQuery] int id, [FromBody] Event @event)
+        public async Task<IActionResult> PutEvent([FromQuery] int id, [FromBody] EventModelView @event)
         {
-            if (id != @event.EventId)
+            Event temp = new()
+            {
+                Name = @event.Name,
+                PrizeFund = @event.PrizeFund,
+                LocationEvent = @event.LocationEvent,
+                DataStart = @event.DataStart,
+                DataFinish = @event.DataFinish,
+                StatusId = @event.StatusID,
+                OrganizerId = @event.OrganizerID,
+                IsPublic = @event.IsPublic,
+                TypeEvent = @event.TypeEvent
+            };
+
+            if (id != temp.EventId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(@event).State = EntityState.Modified;
+            _context.Entry(temp).State = EntityState.Modified;
 
             try
             {
@@ -83,23 +115,39 @@ namespace CTBApiApp.Controllers
             return NoContent();
         }
 
-        // POST: api/Events
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [Route("create")]
-        public async Task<ActionResult<Event>> PostEvent([FromBody] Event @event)
+        public async Task<ActionResult<Event>> PostEvent([FromBody] EventModelView @event)
         {
             if (_context.Events == null)
             {
-                return Problem("Entity set 'TestContext.Events'  is null.");
+                return Problem("Entity set 'TestContext.Event'  is null.");
             }
-            _context.Events.Add(@event);
+
+            if (@event == null)
+            {
+                return BadRequest("Entity set 'EventModelView'  is null.");
+            }
+
+            Event temp = new()
+            {
+                Name = @event.Name,
+                PrizeFund = @event.PrizeFund,
+                LocationEvent = @event.LocationEvent,
+                DataStart = @event.DataStart,
+                DataFinish = @event.DataFinish,
+                StatusId = @event.StatusID,
+                OrganizerId = @event.OrganizerID,
+                IsPublic = @event.IsPublic,
+                TypeEvent = @event.TypeEvent
+            };
+
+            _context.Events.Add(temp);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEvent", new { id = @event.EventId }, @event);
+            return Ok();
         }
 
-        // DELETE: api/Events/5
         [HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> DeleteEvent([FromQuery] int id)
@@ -118,6 +166,24 @@ namespace CTBApiApp.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet]
+        [Route("getLast")]
+        public async Task<ActionResult<Event>> GetTourLast()
+        {
+            if (_context.Events == null)
+            {
+                return NotFound();
+            }
+            var tour = await _context.Events.OrderByDescending(item => item.EventId).FirstOrDefaultAsync();
+
+            if (tour == default(Event))
+            {
+                return NotFound();
+            }
+
+            return Ok(tour);
         }
 
         private bool EventExists(int id)

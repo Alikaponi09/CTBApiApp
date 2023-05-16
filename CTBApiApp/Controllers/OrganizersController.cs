@@ -21,7 +21,7 @@ namespace CTBApiApp.Controllers
             _context = context;
         }
 
-        // GET: api/Organizers
+
         [HttpGet]
         [Route("get")]
         public async Task<ActionResult<IEnumerable<Organizer>>> GetOrganizers()
@@ -30,10 +30,10 @@ namespace CTBApiApp.Controllers
             {
                 return NotFound();
             }
-            return await _context.Organizers.ToListAsync();
+            return Ok(await _context.Organizers.ToListAsync());
         }
 
-        // GET: api/Organizers/5
+
         [HttpGet]
         [Route("getById")]
         public async Task<ActionResult<Organizer>> GetOrganizer([FromQuery] int id)
@@ -49,11 +49,28 @@ namespace CTBApiApp.Controllers
                 return NotFound();
             }
 
-            return organizer;
+            return Ok(organizer);
         }
 
-        // PUT: api/Organizers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpGet]
+        [Route("getLogin")]
+        public async Task<IActionResult> GetOrganizerLogin([FromQuery] string login)
+        {
+            if (_context.Organizers == null)
+            {
+                return NotFound();
+            }
+            var organizer = await _context.Organizers.FirstOrDefaultAsync(p => p.Login == login);
+
+            if (organizer == null)
+            {
+                return Ok("Nice");
+            }
+
+            return BadRequest();
+        }
+
+
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> PutOrganizer([FromQuery] int id, [FromBody] Organizer organizer)
@@ -81,11 +98,10 @@ namespace CTBApiApp.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok("Nice");
         }
 
-        // POST: api/Organizers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> PostOrganizer([FromBody] RegistrateViewModel organizer)
@@ -107,10 +123,10 @@ namespace CTBApiApp.Controllers
             _context.Organizers.Add(temp);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok("Nice");
         }
 
-        // DELETE: api/Organizers/5
+
         [HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> DeleteOrganizer([FromQuery] int id)
@@ -128,7 +144,7 @@ namespace CTBApiApp.Controllers
             _context.Organizers.Remove(organizer);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok("Nice");
         }
 
         private bool OrganizerExists(int id)

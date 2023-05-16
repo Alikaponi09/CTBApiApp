@@ -20,7 +20,7 @@ namespace CTBApiApp.Controllers
             _context = context;
         }
 
-        // GET: api/Consignments
+
         [HttpGet]
         [Route("get")]
         public async Task<ActionResult<IEnumerable<Consignment>>> GetConsignments()
@@ -32,7 +32,7 @@ namespace CTBApiApp.Controllers
             return await _context.Consignments.ToListAsync();
         }
 
-        // GET: api/Consignments/5
+
         [HttpGet]
         [Route("getById")]
         public async Task<ActionResult<Consignment>> GetConsignment([FromQuery] int id)
@@ -51,8 +51,23 @@ namespace CTBApiApp.Controllers
             return consignment;
         }
 
-        // PUT: api/Consignments/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpGet]
+        [Route("getByTourId")]
+        public async Task<ActionResult<Consignment>> GetConsignmentByTourId([FromQuery] int id)
+        {
+            if (_context.Tours == null)
+                return NotFound();
+
+            var tour = await _context.Consignments.Where(p => p.TourId == id).ToListAsync();
+
+            if (tour == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(tour);
+        }
+
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> PutConsignment([FromQuery] int id,[FromBody] Consignment consignment)
@@ -83,8 +98,7 @@ namespace CTBApiApp.Controllers
             return NoContent();
         }
 
-        // POST: api/Consignments
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         [Route("create")]
         public async Task<ActionResult<Consignment>> PostConsignment([FromBody] Consignment consignment)
@@ -99,7 +113,7 @@ namespace CTBApiApp.Controllers
             return CreatedAtAction("GetConsignment", new { id = consignment.ConsignmentId }, consignment);
         }
 
-        // DELETE: api/Consignments/5
+
         [HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> DeleteConsignment([FromQuery] int id)

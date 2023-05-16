@@ -31,7 +31,6 @@ namespace CTBApiApp.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, autorizate.Login)
             };
-
             ClaimsIdentity identity = new(claims, "Cookie");
             ClaimsPrincipal principal = new(identity);
 
@@ -66,7 +65,7 @@ namespace CTBApiApp.Controllers
             _context.Organizers.Add(temp);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok("Nice");
         }
 
         [HttpPost]

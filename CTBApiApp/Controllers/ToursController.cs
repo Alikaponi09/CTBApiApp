@@ -20,27 +20,27 @@ namespace CTBApiApp.Controllers
             _context = context;
         }
 
-        // GET: api/Tours
+
         [HttpGet]
         [Route("get")]
         public async Task<ActionResult<IEnumerable<Tour>>> GetTours()
         {
-          if (_context.Tours == null)
-          {
-              return NotFound();
-          }
+            if (_context.Tours == null)
+            {
+                return NotFound();
+            }
             return await _context.Tours.ToListAsync();
         }
 
-        // GET: api/Tours/5
+
         [HttpGet]
         [Route("getById")]
         public async Task<ActionResult<Tour>> GetTour([FromQuery] int id)
         {
-          if (_context.Tours == null)
-          {
-              return NotFound();
-          }
+            if (_context.Tours == null)
+            {
+                return NotFound();
+            }
             var tour = await _context.Tours.FindAsync(id);
 
             if (tour == null)
@@ -48,11 +48,46 @@ namespace CTBApiApp.Controllers
                 return NotFound();
             }
 
-            return tour;
+            return Ok(tour);
         }
 
-        // PUT: api/Tours/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpGet]
+        [Route("getByEventId")]
+        public async Task<ActionResult<Tour>> GetTourByEventId([FromQuery] int id)
+        {
+            if (_context.Tours == null)
+                return NotFound();
+
+            var tour = await _context.Tours.Where(p => p.EventId == id).ToListAsync();
+
+            if (tour == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(tour);
+        }
+
+
+        [HttpGet]
+        [Route("getLast")]
+        public async Task<ActionResult<Tour>> GetTourLast()
+        {
+            if (_context.Tours == null)
+            {
+                return NotFound();
+            }
+            var tour = await _context.Tours.OrderByDescending(item => item.TourId).FirstOrDefaultAsync();
+
+            if (tour == default(Tour))
+            {
+                return NotFound();
+            }
+
+            return Ok(tour);
+        }
+
+
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> PutTour([FromQuery] int id, [FromBody] Tour tour)
@@ -83,23 +118,22 @@ namespace CTBApiApp.Controllers
             return NoContent();
         }
 
-        // POST: api/Tours
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         [Route("create")]
         public async Task<ActionResult<Tour>> PostTour([FromBody] Tour tour)
         {
-          if (_context.Tours == null)
-          {
-              return Problem("Entity set 'TestContext.Tours'  is null.");
-          }
+            if (_context.Tours == null)
+            {
+                return Problem("Entity set 'TestContext.Tours'  is null.");
+            }
             _context.Tours.Add(tour);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTour", new { id = tour.TourId }, tour);
         }
 
-        // DELETE: api/Tours/5
+
         [HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> DeleteTour([FromQuery] int id)

@@ -20,7 +20,7 @@ namespace CTBApiApp.Controllers
             _context = context;
         }
 
-        // GET: api/Players
+
         [HttpGet]
         [Route("get")]
         public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
@@ -32,7 +32,7 @@ namespace CTBApiApp.Controllers
             return await _context.Players.ToListAsync();
         }
 
-        // GET: api/Players/5
+
         [HttpGet]
         [Route("getById")]
         public async Task<ActionResult<Player>> GetPlayer([FromQuery] int id)
@@ -51,8 +51,42 @@ namespace CTBApiApp.Controllers
             return player;
         }
 
-        // PUT: api/Players/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+        [HttpGet]
+        [Route("getLogin")]
+        public async Task<IActionResult> GetPlayerLogin([FromQuery] string login)
+        {
+            if (_context.Organizers == null)
+            {
+                return NotFound();
+            }
+            var organizer = await _context.Players.FirstOrDefaultAsync(p => p.Fideid.ToString() == login);
+
+            if (organizer == null)
+            {
+                return Ok("Nice");
+            }
+
+            return BadRequest();
+        }
+
+        [HttpGet]
+        [Route("getByEventId")]
+        public async Task<ActionResult<Player>> GetPlayerByEventId([FromQuery] int id)
+        {
+            if (_context.Tours == null)
+                return NotFound();
+
+            var tour = await _context.EventPlayers.Where(p => p.EventId == id).Select(s => s.Player).ToListAsync();
+
+            if (tour == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(tour);
+        }
+
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> PutPlayer([FromQuery] int id, [FromBody] Player player)
@@ -83,8 +117,7 @@ namespace CTBApiApp.Controllers
             return NoContent();
         }
 
-        // POST: api/Players
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         [Route("create")]
         public async Task<ActionResult<Player>> PostPlayer([FromBody] Player player)
@@ -113,7 +146,7 @@ namespace CTBApiApp.Controllers
             return CreatedAtAction("GetPlayer", new { id = player.Fideid }, player);
         }
 
-        // DELETE: api/Players/5
+
         [HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> DeletePlayer([FromQuery] int id)
