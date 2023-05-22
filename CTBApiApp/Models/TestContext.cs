@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CTBApiApp.ModelView;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTBApiApp.Models;
@@ -34,7 +35,7 @@ public partial class TestContext : DbContext
     public virtual DbSet<Tour> Tours { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-2F32TMB;Database=test111;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-2F32TMB;Database=test3;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -164,6 +165,7 @@ public partial class TestContext : DbContext
             entity.Property(e => e.Contry).HasMaxLength(50);
             entity.Property(e => e.Elorating).HasColumnName("ELORating");
             entity.Property(e => e.FirstName).HasMaxLength(50);
+            entity.Property(e => e.Passord).HasMaxLength(100);
             entity.Property(e => e.LastName).HasMaxLength(50);
             entity.Property(e => e.MiddleName).HasMaxLength(50);
         });

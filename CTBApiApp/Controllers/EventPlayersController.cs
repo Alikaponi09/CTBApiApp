@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CTBApiApp.Models;
+using CTBApiApp.ModelView.DBView;
 
 namespace CTBApiApp.Controllers
 {
@@ -20,27 +16,26 @@ namespace CTBApiApp.Controllers
             _context = context;
         }
 
-        // GET: api/EventPlayers
         [HttpGet]
         [Route("get")]
         public async Task<ActionResult<IEnumerable<EventPlayer>>> GetEventPlayers()
         {
-          if (_context.EventPlayers == null)
-          {
-              return NotFound();
-          }
+            if (_context.EventPlayers == null)
+            {
+                return NotFound();
+            }
             return await _context.EventPlayers.ToListAsync();
         }
 
-        // GET: api/EventPlayers/5
+
         [HttpGet]
         [Route("getById")]
         public async Task<ActionResult<EventPlayer>> GetEventPlayer([FromQuery] int id)
         {
-          if (_context.EventPlayers == null)
-          {
-              return NotFound();
-          }
+            if (_context.EventPlayers == null)
+            {
+                return NotFound();
+            }
             var eventPlayer = await _context.EventPlayers.FindAsync(id);
 
             if (eventPlayer == null)
@@ -51,13 +46,12 @@ namespace CTBApiApp.Controllers
             return eventPlayer;
         }
 
-        // PUT: api/EventPlayers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPut]
         [Route("edit")]
-        public async Task<IActionResult> PutEventPlayer([FromQuery] int id, [FromBody] EventPlayer eventPlayer)
+        public async Task<IActionResult> PutEventPlayer([FromQuery] int id, [FromBody] EventPlayerModelView eventPlayer)
         {
-            if (id != eventPlayer.EventPlayerId)
+            if (id != eventPlayer.EventPlayerID)
             {
                 return BadRequest();
             }
@@ -83,23 +77,35 @@ namespace CTBApiApp.Controllers
             return NoContent();
         }
 
-        // POST: api/EventPlayers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         [Route("create")]
-        public async Task<ActionResult<EventPlayer>> PostEventPlayer([FromBody] EventPlayer eventPlayer)
+        public async Task<ActionResult<EventPlayer>> PostEventPlayer([FromBody] EventPlayerModelView eventPlayer)
         {
-          if (_context.EventPlayers == null)
-          {
-              return Problem("Entity set 'TestContext.EventPlayers'  is null.");
-          }
-            _context.EventPlayers.Add(eventPlayer);
+            if (_context.EventPlayers == null)
+            {
+                return Problem("Entity set 'TestContext.EventPlayers'  is null.");
+            }
+
+            if (eventPlayer == null)
+            {
+                return BadRequest("Entity set 'EventPlayerModelView'  is null.");
+            }
+
+            EventPlayer temp = new()
+            {
+                EventId = eventPlayer.EventID,
+                PlayerId = eventPlayer.PlayerID,
+                TopPlece = eventPlayer.TopPlece
+            };
+
+            _context.EventPlayers.Add(temp);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEventPlayer", new { id = eventPlayer.EventPlayerId }, eventPlayer);
+            return Ok("Nice");
         }
 
-        // DELETE: api/EventPlayers/5
+
         [HttpDelete]
         public async Task<IActionResult> DeleteEventPlayer([FromQuery] int id)
         {

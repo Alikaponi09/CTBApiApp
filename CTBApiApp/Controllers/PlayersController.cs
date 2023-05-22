@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CTBApiApp.Models;
+using CTBApiApp.ModelView.DBView;
 
 namespace CTBApiApp.Controllers
 {
@@ -25,10 +26,10 @@ namespace CTBApiApp.Controllers
         [Route("get")]
         public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
         {
-          if (_context.Players == null)
-          {
-              return NotFound();
-          }
+            if (_context.Players == null)
+            {
+                return NotFound();
+            }
             return await _context.Players.ToListAsync();
         }
 
@@ -37,10 +38,10 @@ namespace CTBApiApp.Controllers
         [Route("getById")]
         public async Task<ActionResult<Player>> GetPlayer([FromQuery] int id)
         {
-          if (_context.Players == null)
-          {
-              return NotFound();
-          }
+            if (_context.Players == null)
+            {
+                return NotFound();
+            }
             var player = await _context.Players.FindAsync(id);
 
             if (player == null)
@@ -89,9 +90,9 @@ namespace CTBApiApp.Controllers
 
         [HttpPut]
         [Route("edit")]
-        public async Task<IActionResult> PutPlayer([FromQuery] int id, [FromBody] Player player)
+        public async Task<IActionResult> PutPlayer([FromQuery] int id, [FromBody] PlayerModelView player)
         {
-            if (id != player.Fideid)
+            if (id != player.FIDEID)
             {
                 return BadRequest();
             }
@@ -120,20 +121,32 @@ namespace CTBApiApp.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<ActionResult<Player>> PostPlayer([FromBody] Player player)
+        public async Task<ActionResult<Player>> PostPlayer([FromBody] PlayerModelView player)
         {
-          if (_context.Players == null)
-          {
-              return Problem("Entity set 'TestContext.Players'  is null.");
-          }
-            _context.Players.Add(player);
+            if (_context.Players == null)
+            {
+                return Problem("Entity set 'TestContext.Players'  is null.");
+            }
+
+            Player temp = new()
+            {
+                FirstName = player.FirstName,
+                MiddleName = player.MiddleName,
+                LastName = player.LastName,
+                Birthday = player.Birthday,
+                Elorating = player.ELORating,
+                Contry = player.Contry,
+                Passord = player.Passord
+            };
+
+            _context.Players.Add(temp);
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
-                if (PlayerExists(player.Fideid))
+                if (PlayerExists(player.FIDEID))
                 {
                     return Conflict();
                 }
@@ -143,7 +156,7 @@ namespace CTBApiApp.Controllers
                 }
             }
 
-            return CreatedAtAction("GetPlayer", new { id = player.Fideid }, player);
+            return Ok("Nice");
         }
 
 

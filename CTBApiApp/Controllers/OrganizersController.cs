@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CTBApiApp.Models;
 using CTBApiApp.ModelView;
+using CTBApiApp.ModelView.DBView;
 
 namespace CTBApiApp.Controllers
 {
@@ -20,7 +21,6 @@ namespace CTBApiApp.Controllers
         {
             _context = context;
         }
-
 
         [HttpGet]
         [Route("get")]
@@ -73,9 +73,9 @@ namespace CTBApiApp.Controllers
 
         [HttpPut]
         [Route("edit")]
-        public async Task<IActionResult> PutOrganizer([FromQuery] int id, [FromBody] Organizer organizer)
+        public async Task<IActionResult> PutOrganizer([FromQuery] int id, [FromBody] OrganizerViewModel organizer)
         {
-            if (id != organizer.OrganizerId)
+            if (id != organizer.OrganizerID)
             {
                 return BadRequest();
             }

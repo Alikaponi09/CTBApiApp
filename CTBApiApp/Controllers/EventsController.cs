@@ -71,7 +71,6 @@ namespace CTBApiApp.Controllers
             return @event;
         }
 
-
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> PutEvent([FromQuery] int id, [FromBody] EventModelView @event)

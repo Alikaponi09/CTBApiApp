@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CTBApiApp.Models;
+using CTBApiApp.ModelView.DBView;
 
 namespace CTBApiApp.Controllers
 {
@@ -25,10 +26,10 @@ namespace CTBApiApp.Controllers
         [Route("get")]
         public async Task<ActionResult<IEnumerable<Consignment>>> GetConsignments()
         {
-          if (_context.Consignments == null)
-          {
-              return NotFound();
-          }
+            if (_context.Consignments == null)
+            {
+                return NotFound();
+            }
             return await _context.Consignments.ToListAsync();
         }
 
@@ -37,10 +38,10 @@ namespace CTBApiApp.Controllers
         [Route("getById")]
         public async Task<ActionResult<Consignment>> GetConsignment([FromQuery] int id)
         {
-          if (_context.Consignments == null)
-          {
-              return NotFound();
-          }
+            if (_context.Consignments == null)
+            {
+                return NotFound();
+            }
             var consignment = await _context.Consignments.FindAsync(id);
 
             if (consignment == null)
@@ -70,9 +71,9 @@ namespace CTBApiApp.Controllers
 
         [HttpPut]
         [Route("edit")]
-        public async Task<IActionResult> PutConsignment([FromQuery] int id,[FromBody] Consignment consignment)
+        public async Task<IActionResult> PutConsignment([FromQuery] int id, [FromBody] ConsignmentModelView consignment)
         {
-            if (id != consignment.ConsignmentId)
+            if (id != consignment.ConsignmentID)
             {
                 return BadRequest();
             }
@@ -101,16 +102,31 @@ namespace CTBApiApp.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<ActionResult<Consignment>> PostConsignment([FromBody] Consignment consignment)
+        public async Task<ActionResult<Consignment>> PostConsignment([FromBody] ConsignmentModelView consignment)
         {
-          if (_context.Consignments == null)
-          {
-              return Problem("Entity set 'TestContext.Consignments'  is null.");
-          }
-            _context.Consignments.Add(consignment);
+            if (_context.Consignments == null)
+            {
+                return Problem("Entity set 'TestContext.Consignments'  is null.");
+            }
+
+            if (consignment == null)
+            {
+                return BadRequest("Entity set 'ConsignmentModelView'  is null.");
+            }
+
+            Consignment temp = new()
+            {
+                DateStart = consignment.DateStart,
+                TourId = consignment.TourID,
+                StatusId = consignment.StatusID,
+                GameMove = consignment.GameMove,
+                TableName = consignment.TableName
+            };
+
+            _context.Consignments.Add(temp);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetConsignment", new { id = consignment.ConsignmentId }, consignment);
+            return Ok("Nice");
         }
 
 
