@@ -61,7 +61,7 @@ namespace CTBApiApp.Controllers
                 Login = organizer.Login,
                 Password = organizer.Password
             };
-
+            
             _context.Organizers.Add(temp);
             await _context.SaveChangesAsync();
 
