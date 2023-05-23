@@ -27,9 +27,8 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<IEnumerable<Organizer>>> GetOrganizers()
         {
             if (_context.Organizers == null)
-            {
                 return NotFound();
-            }
+
             return Ok(await _context.Organizers.ToListAsync());
         }
 
@@ -39,15 +38,12 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<Organizer>> GetOrganizer([FromQuery] int id)
         {
             if (_context.Organizers == null)
-            {
                 return NotFound();
-            }
+
             var organizer = await _context.Organizers.FindAsync(id);
 
             if (organizer == null)
-            {
                 return NotFound();
-            }
 
             return Ok(organizer);
         }
@@ -57,15 +53,12 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> GetOrganizerLogin([FromQuery] string login)
         {
             if (_context.Organizers == null)
-            {
                 return NotFound();
-            }
+
             var organizer = await _context.Organizers.FirstOrDefaultAsync(p => p.Login == login);
 
             if (organizer == null)
-            {
                 return Ok("Nice");
-            }
 
             return BadRequest();
         }
@@ -76,9 +69,7 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> PutOrganizer([FromQuery] int id, [FromBody] OrganizerViewModel organizer)
         {
             if (id != organizer.OrganizerID)
-            {
                 return BadRequest();
-            }
 
             _context.Entry(organizer).State = EntityState.Modified;
 
@@ -89,13 +80,9 @@ namespace CTBApiApp.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!OrganizerExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return Ok("Nice");
@@ -107,9 +94,7 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> PostOrganizer([FromBody] RegistrateViewModel organizer)
         {
             if (_context.Organizers == null)
-            {
                 return Problem("Entity set 'TestContext.Organizers'  is null.");
-            }
 
             Organizer temp = new()
             {
@@ -132,14 +117,11 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> DeleteOrganizer([FromQuery] int id)
         {
             if (_context.Organizers == null)
-            {
                 return Problem("Entity set 'TestContext.Organizers' is null.");
-            }
+
             var organizer = await _context.Organizers.FindAsync(id);
             if (organizer == null)
-            {
                 return BadRequest("Organizer not found");
-            }
 
             _context.Organizers.Remove(organizer);
             await _context.SaveChangesAsync();
@@ -147,9 +129,6 @@ namespace CTBApiApp.Controllers
             return Ok("Nice");
         }
 
-        private bool OrganizerExists(int id)
-        {
-            return (_context.Organizers?.Any(e => e.OrganizerId == id)).GetValueOrDefault();
-        }
+        private bool OrganizerExists(int id) => (_context.Organizers?.Any(e => e.OrganizerId == id)).GetValueOrDefault();
     }
 }

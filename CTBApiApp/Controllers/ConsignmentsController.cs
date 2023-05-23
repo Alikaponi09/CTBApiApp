@@ -105,14 +105,10 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<Consignment>> PostConsignment([FromBody] ConsignmentModelView consignment)
         {
             if (_context.Consignments == null)
-            {
                 return Problem("Entity set 'TestContext.Consignments'  is null.");
-            }
 
             if (consignment == null)
-            {
                 return BadRequest("Entity set 'ConsignmentModelView'  is null.");
-            }
 
             Consignment temp = new()
             {
@@ -135,14 +131,11 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> DeleteConsignment([FromQuery] int id)
         {
             if (_context.Consignments == null)
-            {
                 return NotFound();
-            }
+
             var consignment = await _context.Consignments.FindAsync(id);
             if (consignment == null)
-            {
                 return NotFound();
-            }
 
             _context.Consignments.Remove(consignment);
             await _context.SaveChangesAsync();
@@ -150,9 +143,6 @@ namespace CTBApiApp.Controllers
             return NoContent();
         }
 
-        private bool ConsignmentExists(int id)
-        {
-            return (_context.Consignments?.Any(e => e.ConsignmentId == id)).GetValueOrDefault();
-        }
+        private bool ConsignmentExists(int id) => (_context.Consignments?.Any(e => e.ConsignmentId == id)).GetValueOrDefault();
     }
 }

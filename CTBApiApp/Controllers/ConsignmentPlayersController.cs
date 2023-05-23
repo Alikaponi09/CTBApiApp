@@ -20,47 +20,39 @@ namespace CTBApiApp.Controllers
             _context = context;
         }
 
-        // GET: api/ConsignmentPlayers
         [HttpGet]
         [Route("get")]
         public async Task<ActionResult<IEnumerable<ConsignmentPlayer>>> GetConsignmentPlayers()
         {
-          if (_context.ConsignmentPlayers == null)
-          {
-              return NotFound();
-          }
+            if (_context.ConsignmentPlayers == null)
+                return NotFound();
+
             return await _context.ConsignmentPlayers.ToListAsync();
         }
 
-        // GET: api/ConsignmentPlayers/5
+
         [HttpGet]
         [Route("getById")]
         public async Task<ActionResult<ConsignmentPlayer>> GetConsignmentPlayer([FromQuery] int id)
         {
-          if (_context.ConsignmentPlayers == null)
-          {
-              return NotFound();
-          }
+            if (_context.ConsignmentPlayers == null)
+                return NotFound();
+
             var consignmentPlayer = await _context.ConsignmentPlayers.FindAsync(id);
 
             if (consignmentPlayer == null)
-            {
                 return NotFound();
-            }
 
             return consignmentPlayer;
         }
 
-        // PUT: api/ConsignmentPlayers/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+4
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> PutConsignmentPlayer([FromQuery] int id, [FromBody] ConsignmentPlayer consignmentPlayer)
         {
             if (id != consignmentPlayer.ConsignmentPlayerId)
-            {
                 return BadRequest();
-            }
 
             _context.Entry(consignmentPlayer).State = EntityState.Modified;
 
@@ -71,48 +63,39 @@ namespace CTBApiApp.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!ConsignmentPlayerExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
         }
 
-        // POST: api/ConsignmentPlayers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
         [HttpPost]
         [Route("create")]
         public async Task<ActionResult<ConsignmentPlayer>> PostConsignmentPlayer([FromBody] ConsignmentPlayer consignmentPlayer)
         {
-          if (_context.ConsignmentPlayers == null)
-          {
-              return Problem("Entity set 'TestContext.ConsignmentPlayers'  is null.");
-          }
+            if (_context.ConsignmentPlayers == null)
+                return Problem("Entity set 'TestContext.ConsignmentPlayers'  is null.");
+
             _context.ConsignmentPlayers.Add(consignmentPlayer);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetConsignmentPlayer", new { id = consignmentPlayer.ConsignmentPlayerId }, consignmentPlayer);
         }
 
-        // DELETE: api/ConsignmentPlayers/5
+
         [HttpDelete]
         [Route("delete")]
         public async Task<IActionResult> DeleteConsignmentPlayer([FromQuery] int id)
         {
             if (_context.ConsignmentPlayers == null)
-            {
                 return NotFound();
-            }
+
             var consignmentPlayer = await _context.ConsignmentPlayers.FindAsync(id);
             if (consignmentPlayer == null)
-            {
                 return NotFound();
-            }
 
             _context.ConsignmentPlayers.Remove(consignmentPlayer);
             await _context.SaveChangesAsync();
@@ -120,9 +103,6 @@ namespace CTBApiApp.Controllers
             return NoContent();
         }
 
-        private bool ConsignmentPlayerExists(int id)
-        {
-            return (_context.ConsignmentPlayers?.Any(e => e.ConsignmentPlayerId == id)).GetValueOrDefault();
-        }
+        private bool ConsignmentPlayerExists(int id) => (_context.ConsignmentPlayers?.Any(e => e.ConsignmentPlayerId == id)).GetValueOrDefault();
     }
 }

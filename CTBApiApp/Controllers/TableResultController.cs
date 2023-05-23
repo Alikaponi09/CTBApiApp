@@ -55,7 +55,7 @@ namespace CTBApiApp.Controllers
         }
 
         [HttpGet]
-        [Route("getResultTable")]
+        [Route("getResultTableСircle")]
         public async Task<IActionResult> GetResultTableСircle([FromQuery] string table)
         {
             string formattable = ";with playerSum as" +
@@ -89,6 +89,5 @@ namespace CTBApiApp.Controllers
                 return BadRequest(e.Message);
             }
         }
-
     }
 }

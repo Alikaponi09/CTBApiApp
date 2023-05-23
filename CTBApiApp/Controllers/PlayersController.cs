@@ -27,9 +27,8 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<IEnumerable<Player>>> GetPlayers()
         {
             if (_context.Players == null)
-            {
                 return NotFound();
-            }
+
             return await _context.Players.ToListAsync();
         }
 
@@ -39,15 +38,12 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<Player>> GetPlayer([FromQuery] int id)
         {
             if (_context.Players == null)
-            {
                 return NotFound();
-            }
+
             var player = await _context.Players.FindAsync(id);
 
             if (player == null)
-            {
                 return NotFound();
-            }
 
             return player;
         }
@@ -58,15 +54,12 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> GetPlayerLogin([FromQuery] string login)
         {
             if (_context.Organizers == null)
-            {
                 return NotFound();
-            }
+
             var organizer = await _context.Players.FirstOrDefaultAsync(p => p.Fideid.ToString() == login);
 
             if (organizer == null)
-            {
                 return Ok("Nice");
-            }
 
             return BadRequest();
         }
@@ -81,9 +74,7 @@ namespace CTBApiApp.Controllers
             var tour = await _context.EventPlayers.Where(p => p.EventId == id).Select(s => s.Player).ToListAsync();
 
             if (tour == null)
-            {
                 return NotFound();
-            }
 
             return Ok(tour);
         }
@@ -93,9 +84,7 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> PutPlayer([FromQuery] int id, [FromBody] PlayerModelView player)
         {
             if (id != player.FIDEID)
-            {
                 return BadRequest();
-            }
 
             _context.Entry(player).State = EntityState.Modified;
 
@@ -106,13 +95,9 @@ namespace CTBApiApp.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!PlayerExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
@@ -124,9 +109,7 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<Player>> PostPlayer([FromBody] PlayerModelView player)
         {
             if (_context.Players == null)
-            {
                 return Problem("Entity set 'TestContext.Players'  is null.");
-            }
 
             Player temp = new()
             {
@@ -147,13 +130,9 @@ namespace CTBApiApp.Controllers
             catch (DbUpdateException)
             {
                 if (PlayerExists(player.FIDEID))
-                {
                     return Conflict();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return Ok("Nice");
@@ -165,14 +144,11 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> DeletePlayer([FromQuery] int id)
         {
             if (_context.Players == null)
-            {
                 return NotFound();
-            }
+
             var player = await _context.Players.FindAsync(id);
             if (player == null)
-            {
                 return NotFound();
-            }
 
             _context.Players.Remove(player);
             await _context.SaveChangesAsync();
@@ -180,9 +156,6 @@ namespace CTBApiApp.Controllers
             return NoContent();
         }
 
-        private bool PlayerExists(int id)
-        {
-            return (_context.Players?.Any(e => e.Fideid == id)).GetValueOrDefault();
-        }
+        private bool PlayerExists(int id) => (_context.Players?.Any(e => e.Fideid == id)).GetValueOrDefault();
     }
 }

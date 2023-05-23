@@ -88,10 +88,11 @@ namespace CTBApiApp.Controllers
 
         [HttpPut]
         [Route("updatePozition")]
-        public async Task<IActionResult> UpdatePozition([FromQuery] string table, [FromBody] UpdateFigureModelView view)
+        public async Task<IActionResult> UpdatePozition([FromQuery] string table, [FromQuery] bool IsMoving, [FromBody] UpdateFigureModelView view)
         {
             string formattable = $"UPDATE {table} " +
                $"SET Pozition = '{view.Item1}'" +
+               $"IsMoving = {IsMoving}" +
                $" WHERE ID = {view.Item2}";
 
             try
@@ -112,6 +113,26 @@ namespace CTBApiApp.Controllers
             string formattable = $"UPDATE {table} " +
                 $"SET InGame = 1" +
                 $" WHERE EatID = {view.Item1}";
+
+            try
+            {
+                var items = await _context.Database.ExecuteSqlRawAsync(formattable);
+                return Ok(items);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("updateEat")]
+        public async Task<IActionResult> UpdateEat([FromQuery] string table, [FromBody] UpdateFigureModelView view)
+        {
+            string formattable = $"UPDATE {table} " +
+                $"SET InGame = 0," +
+                $" EatID = {view.Item1}" +
+                $" WHERE ID = {view.Item2}";
 
             try
             {

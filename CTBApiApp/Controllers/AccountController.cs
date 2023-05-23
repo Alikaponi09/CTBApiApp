@@ -44,14 +44,10 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> PostOrganizer([FromBody] RegistrateViewModel organizer)
         {
             if (_context.Organizers == null)
-            {
                 return Problem("Entity set 'TestContext.Organizers'  is null.");
-            }
 
             if (organizer == null)
-            {
                 return BadRequest("Entity set 'RegistrateViewModel'  is null.");
-            }
 
             Organizer temp = new()
             {

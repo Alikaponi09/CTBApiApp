@@ -21,9 +21,8 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<IEnumerable<EventPlayer>>> GetEventPlayers()
         {
             if (_context.EventPlayers == null)
-            {
                 return NotFound();
-            }
+
             return await _context.EventPlayers.ToListAsync();
         }
 
@@ -33,15 +32,12 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<EventPlayer>> GetEventPlayer([FromQuery] int id)
         {
             if (_context.EventPlayers == null)
-            {
                 return NotFound();
-            }
+
             var eventPlayer = await _context.EventPlayers.FindAsync(id);
 
             if (eventPlayer == null)
-            {
                 return NotFound();
-            }
 
             return eventPlayer;
         }
@@ -52,9 +48,7 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> PutEventPlayer([FromQuery] int id, [FromBody] EventPlayerModelView eventPlayer)
         {
             if (id != eventPlayer.EventPlayerID)
-            {
                 return BadRequest();
-            }
 
             _context.Entry(eventPlayer).State = EntityState.Modified;
 
@@ -65,13 +59,9 @@ namespace CTBApiApp.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!EventPlayerExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
@@ -83,14 +73,10 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<EventPlayer>> PostEventPlayer([FromBody] EventPlayerModelView eventPlayer)
         {
             if (_context.EventPlayers == null)
-            {
                 return Problem("Entity set 'TestContext.EventPlayers'  is null.");
-            }
 
             if (eventPlayer == null)
-            {
                 return BadRequest("Entity set 'EventPlayerModelView'  is null.");
-            }
 
             EventPlayer temp = new()
             {
@@ -110,14 +96,11 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> DeleteEventPlayer([FromQuery] int id)
         {
             if (_context.EventPlayers == null)
-            {
                 return NotFound();
-            }
+
             var eventPlayer = await _context.EventPlayers.FindAsync(id);
             if (eventPlayer == null)
-            {
                 return NotFound();
-            }
 
             _context.EventPlayers.Remove(eventPlayer);
             await _context.SaveChangesAsync();
@@ -125,9 +108,6 @@ namespace CTBApiApp.Controllers
             return NoContent();
         }
 
-        private bool EventPlayerExists(int id)
-        {
-            return (_context.EventPlayers?.Any(e => e.EventPlayerId == id)).GetValueOrDefault();
-        }
+        private bool EventPlayerExists(int id) => (_context.EventPlayers?.Any(e => e.EventPlayerId == id)).GetValueOrDefault();
     }
 }

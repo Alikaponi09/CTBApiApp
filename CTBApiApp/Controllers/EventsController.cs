@@ -23,32 +23,31 @@ namespace CTBApiApp.Controllers
             _context = context;
         }
 
-
         [HttpGet]
         [Route("get")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
         {
             if (_context.Events == null)
-            {
                 return NotFound();
-            }
+
             return await _context.Events.ToListAsync();
         }
-
 
         [HttpGet]
         [Route("getPublic")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEventsPublic()
         {
             var claims = HttpContext.User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
             if (claims == null) return BadRequest();
+
             var user = await _context.Organizers.FirstOrDefaultAsync(p => p.Login == claims.Value);
+
             if (user == null) return BadRequest();
 
             if (_context.Events == null)
-            {
                 return NotFound();
-            }
+
             return await _context.Events.Where(p => p.IsPublic && p.OrganizerId == user.OrganizerId).ToListAsync();
         }
 
@@ -58,15 +57,12 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<Event>> GetEvent([FromQuery] int id)
         {
             if (_context.Events == null)
-            {
                 return NotFound();
-            }
+
             var @event = await _context.Events.FindAsync(id);
 
             if (@event == null)
-            {
                 return NotFound();
-            }
 
             return @event;
         }
@@ -89,9 +85,7 @@ namespace CTBApiApp.Controllers
             };
 
             if (id != temp.EventId)
-            {
                 return BadRequest();
-            }
 
             _context.Entry(temp).State = EntityState.Modified;
 
@@ -102,13 +96,9 @@ namespace CTBApiApp.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!EventExists(id))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return NoContent();
@@ -119,14 +109,10 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<Event>> PostEvent([FromBody] EventModelView @event)
         {
             if (_context.Events == null)
-            {
                 return Problem("Entity set 'TestContext.Event'  is null.");
-            }
 
             if (@event == null)
-            {
                 return BadRequest("Entity set 'EventModelView'  is null.");
-            }
 
             Event temp = new()
             {
@@ -152,14 +138,11 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> DeleteEvent([FromQuery] int id)
         {
             if (_context.Events == null)
-            {
                 return NotFound();
-            }
+
             var @event = await _context.Events.FindAsync(id);
             if (@event == null)
-            {
                 return NotFound();
-            }
 
             _context.Events.Remove(@event);
             await _context.SaveChangesAsync();
@@ -172,22 +155,16 @@ namespace CTBApiApp.Controllers
         public async Task<ActionResult<Event>> GetTourLast()
         {
             if (_context.Events == null)
-            {
                 return NotFound();
-            }
+
             var tour = await _context.Events.OrderByDescending(item => item.EventId).FirstOrDefaultAsync();
 
             if (tour == default(Event))
-            {
                 return NotFound();
-            }
 
             return Ok(tour);
         }
 
-        private bool EventExists(int id)
-        {
-            return (_context.Events?.Any(e => e.EventId == id)).GetValueOrDefault();
-        }
+        private bool EventExists(int id) => (_context.Events?.Any(e => e.EventId == id)).GetValueOrDefault();
     }
 }
