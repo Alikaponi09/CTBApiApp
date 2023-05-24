@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 
 namespace CTBApiApp.Models;
 
@@ -23,6 +22,7 @@ public partial class Player
 
     public byte[]? Image { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<ConsignmentPlayer> ConsignmentPlayers { get; set; } = new List<ConsignmentPlayer>();
 
     public virtual ICollection<EventPlayer> EventPlayers { get; set; } = new List<EventPlayer>();

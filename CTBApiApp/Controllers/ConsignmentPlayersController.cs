@@ -46,7 +46,6 @@ namespace CTBApiApp.Controllers
             return consignmentPlayer;
         }
 
-4
         [HttpPut]
         [Route("edit")]
         public async Task<IActionResult> PutConsignmentPlayer([FromQuery] int id, [FromBody] ConsignmentPlayer consignmentPlayer)

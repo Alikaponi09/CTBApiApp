@@ -11,7 +11,7 @@ namespace CTBApiApp.ModelView.DBView
         public string? GameMove { get; set; }
         public string? TableName { get; set; }
 
-        public ConsignmentPlayer whitePlayer = null!;
-        public ConsignmentPlayer blackPlayer = null!;
+        public ConsignmentPlayerModelView WhitePlayer { get; set; } = null!;
+        public ConsignmentPlayerModelView BlackPlayer { get; set; } = null!;
     }
 }

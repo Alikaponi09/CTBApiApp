@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace CTBApiApp.Models;
 
@@ -29,6 +30,7 @@ public partial class Event
 
     public virtual ICollection<EventPlayer> EventPlayers { get; set; } = new List<EventPlayer>();
 
+    [JsonIgnore]
     public virtual Organizer Organizer { get; set; } = null!;
 
     public virtual Status Status { get; set; } = null!;

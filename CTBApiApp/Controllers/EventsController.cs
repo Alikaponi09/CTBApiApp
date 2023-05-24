@@ -9,6 +9,7 @@ using CTBApiApp.Models;
 using Microsoft.Extensions.Logging;
 using CTBApiApp.ModelView.DBView;
 using System.Security.Claims;
+using CTBApiApp.ModelView;
 
 namespace CTBApiApp.Controllers
 {
@@ -48,7 +49,7 @@ namespace CTBApiApp.Controllers
             if (_context.Events == null)
                 return NotFound();
 
-            return await _context.Events.Where(p => p.IsPublic && p.OrganizerId == user.OrganizerId).ToListAsync();
+            return await _context.Events.Where(p => p.IsPublic || p.OrganizerId == user.OrganizerId).ToListAsync();
         }
 
 
@@ -65,6 +66,26 @@ namespace CTBApiApp.Controllers
                 return NotFound();
 
             return @event;
+        }
+
+        [HttpPost]
+        [Route("updateStatus")]
+        public async Task<IActionResult> UpdateStatus()
+        {
+            string formattable = @"UPDATE Event SET StatusId = 
+                                    CASE
+                                        WHEN DataFinish < GETDATE() THEN 1
+                                        WHEN DataStart <= GETDATE() AND DataFinish >= GETDATE() THEN 2
+                                        ELSE 3 END;";
+            try
+            {
+                var items = await _context.Database.ExecuteSqlRawAsync(formattable);
+                return Ok("Nice");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPut]
@@ -130,7 +151,7 @@ namespace CTBApiApp.Controllers
             _context.Events.Add(temp);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok("Nice");
         }
 
         [HttpDelete]
@@ -149,6 +170,8 @@ namespace CTBApiApp.Controllers
 
             return NoContent();
         }
+
+
 
         [HttpGet]
         [Route("getLast")]
