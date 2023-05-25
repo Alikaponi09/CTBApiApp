@@ -40,6 +40,26 @@ namespace CTBApiApp.Controllers
         }
 
         [HttpPost]
+        [Route("autorizatePlayer")]
+        public async Task<IActionResult> AutorizatePlayer([FromBody] AutorizateViewModel autorizate)
+        {
+            var temp = await _context.Players.FirstOrDefaultAsync(p => p.Fideid.ToString() == autorizate.Login && p.Passord == autorizate.Password);
+
+            if (temp == null) return BadRequest("Player not found");
+
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier, autorizate.Login)
+            };
+            ClaimsIdentity identity = new(claims, "Cookie");
+            ClaimsPrincipal principal = new(identity);
+
+            await HttpContext.SignInAsync(principal);
+
+            return Ok("Nice");
+        }
+
+        [HttpPost]
         [Route("registrate")]
         public async Task<IActionResult> PostOrganizer([FromBody] RegistrateViewModel organizer)
         {
@@ -94,6 +114,33 @@ namespace CTBApiApp.Controllers
                 Login = user.Login,
                 Password = user.Password,
                 Administrator = await _context.Administrators.FirstOrDefaultAsync(p => p.OrganizerId == user.OrganizerId) != default(Administrator) ? 1 : -1
+            };
+
+            return Ok(organizerViewModel);
+        }
+
+        [HttpGet]
+        [Route("getInfoPlayer")]
+        public async Task<IActionResult> GetInfoPlayer()
+        {
+            var claims = HttpContext.User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
+            if (claims == null) return BadRequest();
+
+            var user = await _context.Players.FirstOrDefaultAsync(p => p.Fideid.ToString() == claims.Value);
+
+            if (user == null) return BadRequest();
+
+            PlayerModelView organizerViewModel = new()
+            {
+                FIDEID = user.Fideid,
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+                Passord = user.Passord,
+                Birthday = user.Birthday,
+                ELORating = user.Elorating,
+                Contry = user.Contry
             };
 
             return Ok(organizerViewModel);

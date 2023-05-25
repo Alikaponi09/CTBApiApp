@@ -113,6 +113,7 @@ namespace CTBApiApp.Controllers
 
             Player temp = new()
             {
+                Fideid = player.FIDEID,
                 FirstName = player.FirstName,
                 MiddleName = player.MiddleName,
                 LastName = player.LastName,

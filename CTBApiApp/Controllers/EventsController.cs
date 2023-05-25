@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CTBApiApp.Models;
-using Microsoft.Extensions.Logging;
 using CTBApiApp.ModelView.DBView;
 using System.Security.Claims;
-using CTBApiApp.ModelView;
 
 namespace CTBApiApp.Controllers
 {
@@ -50,6 +43,25 @@ namespace CTBApiApp.Controllers
                 return NotFound();
 
             return await _context.Events.Where(p => p.IsPublic || p.OrganizerId == user.OrganizerId).ToListAsync();
+        }
+
+
+        [HttpGet]
+        [Route("getPlayerEvent")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetPlayerEvent()
+        {
+            var claims = HttpContext.User.Claims.FirstOrDefault(p => p.Type == ClaimTypes.NameIdentifier);
+
+            if (claims == null) return BadRequest();
+
+            var user = await _context.Players.FirstOrDefaultAsync(p => p.Fideid.ToString() == claims.Value);
+
+            if (user == null) return BadRequest();
+
+            if (_context.Events == null)
+                return NotFound();
+
+            return await _context.Events.Where(p => p.EventPlayers.Any(s => s.PlayerId == user.Fideid)).ToListAsync();
         }
 
 
@@ -170,7 +182,6 @@ namespace CTBApiApp.Controllers
 
             return NoContent();
         }
-
 
 
         [HttpGet]
