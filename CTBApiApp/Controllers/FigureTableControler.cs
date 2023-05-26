@@ -58,11 +58,11 @@ namespace CTBApiApp.Controllers
         public async Task<IActionResult> InsertFigure([FromQuery] string table,[FromBody] FigureTableViewModel value)
         {
             string formattable = $"insert into {table} (Figure,Pozition,IsWhile)" +
-                $"values ('{value.Name}','{value.Pozition}',{value.IsWhile})";
+                $"values ('{value.Figure}','{value.Pozition}',{value.IsWhile})";
             try
             {
                 var items = await _context.Database.ExecuteSqlRawAsync(formattable);
-                return Ok(items);
+                return Ok("Nice");
             }
             catch (Exception e)
             {
@@ -78,27 +78,30 @@ namespace CTBApiApp.Controllers
             try
             {
                 var items = await _context.Database.SqlQueryRaw<string>(formattable).ToListAsync();
-                return Ok(items);
+                string result = string.Join("", items);
+                return Ok(result);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
+       
 
         [HttpPut]
         [Route("updatePozition")]
         public async Task<IActionResult> UpdatePozition([FromQuery] string table, [FromQuery] bool IsMoving, [FromBody] UpdateFigureModelView view)
         {
+            int ism = IsMoving ? 1 : 0;
             string formattable = $"UPDATE {table} " +
-               $"SET Pozition = '{view.Item1}'" +
-               $"IsMoving = {IsMoving}" +
+               $"SET Pozition = '{view.Item1}'," +
+               $"IsMoving = {ism}" +
                $" WHERE ID = {view.Item2}";
 
             try
             {
                 var items = await _context.Database.ExecuteSqlRawAsync(formattable);
-                return Ok(items);
+                return Ok("Nice");
             }
             catch (Exception e)
             {
@@ -117,7 +120,7 @@ namespace CTBApiApp.Controllers
             try
             {
                 var items = await _context.Database.ExecuteSqlRawAsync(formattable);
-                return Ok(items);
+                return Ok("Nice");
             }
             catch (Exception e)
             {
@@ -137,7 +140,7 @@ namespace CTBApiApp.Controllers
             try
             {
                 var items = await _context.Database.ExecuteSqlRawAsync(formattable);
-                return Ok(items);
+                return Ok("Nice");
             }
             catch (Exception e)
             {
@@ -162,7 +165,7 @@ namespace CTBApiApp.Controllers
             try
             {
                 var items = await _context.Database.ExecuteSqlRawAsync(formattable);
-                return Ok(items);
+                return Ok("Nice");
             }
             catch (Exception e)
             {
@@ -187,7 +190,7 @@ namespace CTBApiApp.Controllers
             try
             {
                 var items = await _context.Database.ExecuteSqlRawAsync(formattable);
-                return Ok(items);
+                return Ok("Nice");
             }
             catch (Exception e)
             {
