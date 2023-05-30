@@ -211,9 +211,12 @@ namespace CTBApiApp.Controllers
                 TableName = consignment.TableName
             };
 
+            _context.Consignments.Add(temp);
+            var consignmentID = (await _context.Consignments.OrderByDescending(item => item.ConsignmentId).FirstAsync()).ConsignmentId;
+
             ConsignmentPlayer tempW = new()
             {
-                ConsignmentId = consignment.WhitePlayer.ConsignmentId,
+                ConsignmentId = consignmentID,
                 PlayerId = consignment.WhitePlayer.PlayerId,
                 IsWhile = consignment.WhitePlayer.IsWhile,
                 Result = consignment.WhitePlayer.Result
@@ -221,14 +224,11 @@ namespace CTBApiApp.Controllers
 
             ConsignmentPlayer tempB = new()
             {
-                ConsignmentId = consignment.BlackPlayer.ConsignmentId,
+                ConsignmentId = consignmentID,
                 PlayerId = consignment.BlackPlayer.PlayerId,
                 IsWhile = consignment.BlackPlayer.IsWhile,
                 Result = consignment.BlackPlayer.Result
             };
-
-
-            _context.Consignments.Add(temp);
 
             _context.ConsignmentPlayers.Add(tempW);
             _context.ConsignmentPlayers.Add(tempB);

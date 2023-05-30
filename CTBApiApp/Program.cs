@@ -1,6 +1,4 @@
 using CTBApiApp.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 

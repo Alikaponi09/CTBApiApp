@@ -52,7 +52,7 @@ namespace CTBApiApp.Controllers
             try
             {
                 var items = await _context.Database.SqlQueryRaw<string>(formattable).ToArrayAsync();
-                return Ok(items);
+                return Ok(items[0][1..^1]);
             }
             catch (Exception e)
             {
