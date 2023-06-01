@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CTBApiApp.Models;
 using CTBApiApp.ModelView.DBView;
@@ -62,6 +57,28 @@ namespace CTBApiApp.Controllers
                 return Ok("Nice");
 
             return BadRequest();
+        }
+
+        [HttpGet]
+        [Route("insertAdmin")]
+        public async Task<IActionResult> InsertAdmin()
+        {
+            if (_context.Administrators == null)
+                return NotFound();
+
+
+            await _context.Administrators.AddAsync(new Administrator() {OrganizerId = 1 });
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch 
+            {
+                BadRequest("Не удалось добавить администратора");
+            }
+
+            return Ok("Nice");
         }
 
         [HttpGet]

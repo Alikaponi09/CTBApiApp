@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using CTBApiApp.ModelView;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace CTBApiApp.Models;
 

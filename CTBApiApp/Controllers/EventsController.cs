@@ -86,9 +86,9 @@ namespace CTBApiApp.Controllers
         {
             string formattable = @"UPDATE Event SET StatusId = 
                                     CASE
-                                        WHEN DataFinish < GETDATE() THEN 1
-                                        WHEN DataStart <= GETDATE() AND DataFinish >= GETDATE() THEN 2
-                                        ELSE 3 END;";
+                                        WHEN DataStart > GETDATE() THEN 2
+                                        WHEN DataFinish > GETDATE() AND DataStart < GETDATE() THEN 3
+                                        ELSE 1 END;";
             try
             {
                 var items = await _context.Database.ExecuteSqlRawAsync(formattable);
